@@ -1,4 +1,4 @@
-Announcer
+Announce
 =========
 
 To be used in conjunction with a cron job to announce the hour, on the hour.
