@@ -19,7 +19,7 @@ announce
 
 * Ruby
 * mpg123
-* AWS credentials (set in env.yml)
+* AWS credentials (edit in env.yml)
 
 ## Install
 
