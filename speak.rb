@@ -6,7 +6,7 @@ require 'aws-sdk-polly'
 Envyable.load("#{ __dir__ }/config/env.yml")
 
 hour = Time.new.strftime("%l")
-#script = "The time is #{ hour } o'clock"
+#script = "The time is #{ hour } o'clock."
 script = "時間は#{ hour }時です。"
 
 polly = Aws::Polly::Client.new(
@@ -22,13 +22,13 @@ response = polly.synthesize_speech({
 })
 
 temp_path = "#{ __dir__ }/temp"
-tannoy_path = "#{ __dir__ }/tannoy.mp3"
+bell_path = "#{ __dir__ }/bell.mp3"
 time_path = "#{ temp_path }/time.mp3"
 
 FileUtils.mkdir_p(temp_path)
 
 IO.copy_stream(response.audio_stream, time_path)
 
-`mpg123 #{ tannoy_path } 2>/dev/null; mpg123 #{ time_path } 2>/dev/null`
+`mpg123 #{ bell_path } 2>/dev/null && mpg123 #{ time_path } 2>/dev/null`
 
 FileUtils.rm_rf(temp_path)
