@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 
+require 'envyable'
 require 'aws-sdk-polly'
+
+Envyable.load('./config/env.yml')
 
 hour = Time.new.strftime("%l")
 #script = "The time is #{ hour } o'clock"
