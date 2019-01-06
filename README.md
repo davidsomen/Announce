@@ -6,7 +6,7 @@ To be used in conjunction with a cron job to announce the hour, on the hour.
 ```
 # Run at midnight and every hour between 6 and 11pm
 
-0 0,6-23 * * * ~/Announcer/speak.rb
+0 0,6-23 * * * ~/Announcer/announce
 ```
 
 ## Usage
