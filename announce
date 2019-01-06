@@ -3,7 +3,7 @@
 require 'envyable'
 require 'aws-sdk-polly'
 
-Envyable.load("#{ __dir__ }/config/env.yml")
+Envyable.load("#{ __dir__ }/env.yml")
 
 hour = Time.new.strftime("%l")
 #script = "The time is #{ hour } o'clock."
