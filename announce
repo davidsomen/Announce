@@ -12,13 +12,13 @@ script = "時間は#{ hour }時です。"
 polly = Aws::Polly::Client.new(
   access_key_id: ENV["ACCESS_KEY_ID"],
   secret_access_key: ENV["SECRET_ACCESS_KEY"],
-  region: 'eu-west-1'
+  region: ENV["REGION"]
 )
 
 response = polly.synthesize_speech({
   output_format: 'mp3',
   text: script,
-  voice_id: 'Takumi'
+  voice_id: ENV["VOICE_ID"]
 })
 
 temp_path = "#{ __dir__ }/temp"
