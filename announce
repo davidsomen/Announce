@@ -2,12 +2,48 @@
 
 require 'envyable'
 require 'aws-sdk-polly'
+require 'optparse'
 
-Envyable.load("#{ __dir__ }/env.yml")
+env_path = "#{ __dir__ }/env.yml"
+Envyable.load(env_path)
 
-hour = Time.new.strftime("%l")
-#script = "The time is #{ hour } o'clock."
-script = "時間は#{ hour }時です。"
+options = {}
+options[:voice] = ENV["VOICE_ID"]
+options[:bell] = ENV["BELL_FILE"]
+
+temp_path = "#{ __dir__ }/.temp"
+bells_path = "#{ __dir__ }/bells"
+bell_path = "#{ bells_path }/#{ options[:bell] }"
+speech_path = "#{ temp_path }/speech.mp3"
+
+optparse = OptionParser.new do |p|
+  p.banner = "Usage: say [options] script"
+  p.on('-vVOICE', '--voice=VOICE', 'The AWS Polly voice used to generate the speech') do |l|
+    options[:voice] = l
+  end
+  p.on('-bBELL', '--bell=BELL', 'The sound file to play before the announcement') do |b|
+    options[:bell] = b
+  end
+  p.on('-t', '--time', 'Announce the time') do |t|
+    options[:time] = t
+  end
+  p.on('-h', '--help', 'Display help information') do
+    puts p
+    exit
+  end
+end
+
+optparse.parse!
+
+if options[:time]
+  hour = Time.new.strftime("%l")
+  #script = "It's #{ hour } o'clock."
+  script = "#{ hour }時です。"
+else
+  script = ARGV.join(' ')
+end
+
+puts script
 
 polly = Aws::Polly::Client.new(
   access_key_id: ENV["ACCESS_KEY_ID"],
@@ -18,17 +54,13 @@ polly = Aws::Polly::Client.new(
 response = polly.synthesize_speech({
   output_format: 'mp3',
   text: script,
-  voice_id: ENV["VOICE_ID"]
+  voice_id: options[:voice]
 })
-
-temp_path = "#{ __dir__ }/temp"
-bell_path = "#{ __dir__ }/bell.mp3"
-time_path = "#{ temp_path }/time.mp3"
 
 FileUtils.mkdir_p(temp_path)
 
-IO.copy_stream(response.audio_stream, time_path)
+IO.copy_stream(response.audio_stream, speech_path)
 
-`mpg123 #{ bell_path } 2>/dev/null && mpg123 #{ time_path } 2>/dev/null`
+fork { `mpg123 #{ bell_path } 2>/dev/null && mpg123 #{ speech_path } 2>/dev/null` }
 
-FileUtils.rm_rf(temp_path)
+#FileUtils.rm_rf(temp_path)

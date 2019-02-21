@@ -5,6 +5,11 @@ require 'sinatra'
 #set :port, 80
 set :bind, '0.0.0.0'   
 
+before do
+  headers 'Access-Control-Allow-Origin' => '*', 
+          'Access-Control-Allow-Methods' => ['GET', 'POST']  
+end
+
 get '/' do
   <<-HTML
     <html>
@@ -28,7 +33,8 @@ get '/' do
 end
 
 post '/' do
-  puts params
-  `espeak "#{ params['text'] }" 2>/dev/null`
-  redirect '/'
+#  puts params
+#  `./say  "#{ params['text'] }" 2>/dev/null`
+#  redirect '/'
+  'SUP DOG'
 end
